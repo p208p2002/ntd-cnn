@@ -12,7 +12,7 @@ print = logging.info
 
 ONE_HUNDRED_DOLLARS = '100'
 FIVE_HUNDRED_DOLLARS = '500'
-ONE_THOUSAND_HUNDRED_DOLLARS = '1000'
+ONE_THOUSAND_DOLLARS = '1000'
 
 def load_money_images(money_type,img_dir='data/money_img'):
     print('load_money_images %s'%money_type)
@@ -26,6 +26,9 @@ def load_money_images(money_type,img_dir='data/money_img'):
     return np.array(imgs)
 
 def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 5,save_dir = 'data/augmentation_img'):
+    if not os.path.isdir(save_dir):
+        os.mkdir(save_dir)
+    save_dir += '/' + save_name_prefix
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
 
@@ -69,5 +72,9 @@ def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 5,save
 
 if __name__ == "__main__":
     one_hunderd_dollars = load_money_images(ONE_HUNDRED_DOLLARS)
-    # five_hunderd_dollars = load_money_images(FIVE_HUNDRED_DOLLARS)
+    five_hunderd_dollars = load_money_images(FIVE_HUNDRED_DOLLARS)
+    one_thousand_dollars = load_money_images(ONE_THOUSAND_DOLLARS)
+    
     img_augmentation(one_hunderd_dollars,ONE_HUNDRED_DOLLARS)
+    img_augmentation(five_hunderd_dollars,FIVE_HUNDRED_DOLLARS)
+    img_augmentation(one_thousand_dollars,ONE_THOUSAND_DOLLARS)
