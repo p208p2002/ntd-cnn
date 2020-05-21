@@ -34,7 +34,7 @@ def computeAccuracy(y_pred, y_target):
 def makeTorchDataset(*features):
     tensor_features = []
     for feature in features:
-        tensor_feature = torch.tensor([f for f in feature])
+        tensor_feature = torch.tensor([f for f in feature],dtype=torch.float)
         tensor_features.append(tensor_feature)
     return TensorDataset(*tensor_features)
 

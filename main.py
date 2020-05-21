@@ -7,8 +7,10 @@ from tqdm import tqdm
 import logging
 import os
 from ez_transformers import *
-# import torch
-# from torch.utils.data import TensorDataset, DataLoader, random_split
+from cnn_model import Net
+import torch
+import torch.nn as nn
+import torch.optim as optim
 
 FORMAT = 'line:%(lineno)d\t%(message)s'
 logging.basicConfig(level=logging.INFO,format=FORMAT)
@@ -73,7 +75,30 @@ def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 5,save
         for j,img_aug in enumerate(images_aug):
             grid_image = ia.draw_grid(np.array([img_aug]), cols=1)
             imageio.imwrite('%s/%s_i%d_j%d.jpg'%(save_dir,save_name_prefix,i,j),grid_image)
-        
+
+def train(model,optimizer,loss_func,train_dataloader,test_dataloader):
+    for epoch in range(2):  # loop over the dataset multiple times
+        running_loss_val = 0.0
+        for i, data in enumerate(train_dataloader):
+            # get the inputs; data is a list of [inputs, labels]
+            inputs, labels = data
+            # print(inputs.shape)
+
+            # zero the parameter gradients
+            optimizer.zero_grad()
+
+            # forward + backward + optimize
+            outputs = net(inputs)
+            loss = loss_func(outputs, labels.type(torch.LongTensor))
+            loss.backward()
+            optimizer.step()
+
+            # print statistics
+            loss_t = loss.item()
+            running_loss_val += (loss_t - running_loss_val) / (i + 1)
+            print(running_loss_val)
+
+    print('Finished Training')
 
 if __name__ == "__main__":
     # 原始訓練資料
@@ -116,9 +141,25 @@ if __name__ == "__main__":
         
     Y = np.array(Y)
     X = np.array(X)
+    X = np.moveaxis(X, -1, 1) # N C H W
     print(Y.shape)
     print(X.shape)
 
     dataset = makeTorchDataset(X,Y)
     train_dataset,test_dataset = splitDataset(dataset)
+    
+    train_dataloader =  makeTorchDataLoader(train_dataset, batch_size=8, shuffle=True)
+    test_dataloader =  makeTorchDataLoader(test_dataset, batch_size=8, shuffle=True)
 
+    # train
+    net = Net()
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+    model_options = {
+        'model':net,
+        'optimizer':optimizer,
+        'loss_func':criterion,
+        'train_dataloader':train_dataloader,
+        'test_dataloader':test_dataloader
+    }
+    train(**model_options)
