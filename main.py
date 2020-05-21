@@ -89,6 +89,7 @@ def train(model,optimizer,loss_func,train_dataloader,test_dataloader):
 
             # forward + backward + optimize
             outputs = net(inputs)
+            # print(outputs.shape)
             loss = loss_func(outputs, labels.type(torch.LongTensor))
             loss.backward()
             optimizer.step()
