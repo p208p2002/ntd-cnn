@@ -100,5 +100,18 @@ if __name__ == "__main__":
     print(label_ids)
     
     Y = []
-    for label_id,X in zip(label_ids,traing_data):
-        print(len(X))
+    X = []
+    for label_id,_X in zip(label_ids,traing_data):
+        #
+        print(len(_X))
+        y = [label_id]*len(_X)
+        print(y)
+        Y+=y
+        #
+        X += [x for x in _X]
+        
+    Y = np.array(Y)
+    X = np.array(X)
+    print(Y.shape)
+    print(X.shape)
+
