@@ -18,6 +18,7 @@ def load_money_images(money_type,img_dir='data/money_img'):
     print('load_money_images %s'%money_type)
     imgs = []
     img_paths = glob.glob(img_dir+'/'+money_type+'/*.jpg')
+    # print(len(img_paths))
     # pbar = tqdm(total=len(img_paths))
     for img_path in img_paths:
         img = imageio.imread(img_path)
@@ -91,7 +92,13 @@ if __name__ == "__main__":
     one_thousand_dollars = np.concatenate([one_thousand_dollars,one_thousand_dollars_augmentation],axis=0)
 
     # 準備訓練資料
+    traing_data = np.array([one_hunderd_dollars,five_hunderd_dollars,one_thousand_dollars])
     labels = [ONE_HUNDRED_DOLLARS,FIVE_HUNDRED_DOLLARS,ONE_THOUSAND_DOLLARS]
     label_ids = [i for i,_ in enumerate(labels)]
+    print(traing_data.shape)
     print(labels)
     print(label_ids)
+    
+    Y = []
+    for label_id,X in zip(label_ids,traing_data):
+        print(len(X))
