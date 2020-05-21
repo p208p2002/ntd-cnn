@@ -71,10 +71,27 @@ def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 5,save
         
 
 if __name__ == "__main__":
-    one_hunderd_dollars = load_money_images(ONE_HUNDRED_DOLLARS)
-    five_hunderd_dollars = load_money_images(FIVE_HUNDRED_DOLLARS)
-    one_thousand_dollars = load_money_images(ONE_THOUSAND_DOLLARS)
+    # 原始訓練資料
+    one_hunderd_dollars = load_money_images(ONE_HUNDRED_DOLLARS, img_dir='data/money_img')
+    five_hunderd_dollars = load_money_images(FIVE_HUNDRED_DOLLARS, img_dir='data/money_img')
+    one_thousand_dollars = load_money_images(ONE_THOUSAND_DOLLARS, img_dir='data/money_img')
     
-    img_augmentation(one_hunderd_dollars,ONE_HUNDRED_DOLLARS)
-    img_augmentation(five_hunderd_dollars,FIVE_HUNDRED_DOLLARS)
-    img_augmentation(one_thousand_dollars,ONE_THOUSAND_DOLLARS)
+    # 資料增量
+    os.system('rm -rf data/augmentation_img/')
+    img_augmentation(one_hunderd_dollars, ONE_HUNDRED_DOLLARS)
+    img_augmentation(five_hunderd_dollars, FIVE_HUNDRED_DOLLARS)
+    img_augmentation(one_thousand_dollars, ONE_THOUSAND_DOLLARS)
+
+    one_hunderd_dollars_augmentation = load_money_images(ONE_HUNDRED_DOLLARS, img_dir='data/augmentation_img')
+    five_hunderd_dollars_augmentation = load_money_images(FIVE_HUNDRED_DOLLARS, img_dir='data/augmentation_img')
+    one_thousand_dollars_augmentation = load_money_images(ONE_THOUSAND_DOLLARS, img_dir='data/augmentation_img')
+
+    one_hunderd_dollars = np.concatenate([one_hunderd_dollars,one_hunderd_dollars_augmentation],axis=0)
+    five_hunderd_dollars = np.concatenate([five_hunderd_dollars,five_hunderd_dollars_augmentation],axis=0)
+    one_thousand_dollars = np.concatenate([one_thousand_dollars,one_thousand_dollars_augmentation],axis=0)
+
+    # 準備訓練資料
+    labels = [ONE_HUNDRED_DOLLARS,FIVE_HUNDRED_DOLLARS,ONE_THOUSAND_DOLLARS]
+    label_ids = [i for i,_ in enumerate(labels)]
+    print(labels)
+    print(label_ids)
