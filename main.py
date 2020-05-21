@@ -6,8 +6,10 @@ import glob
 from tqdm import tqdm
 import logging
 import os
-import torch
-from torch.utils.data import TensorDataset, DataLoader, random_split
+from ez_transformers import *
+# import torch
+# from torch.utils.data import TensorDataset, DataLoader, random_split
+
 FORMAT = 'line:%(lineno)d\t%(message)s'
 logging.basicConfig(level=logging.INFO,format=FORMAT)
 print = logging.info
@@ -15,19 +17,6 @@ print = logging.info
 ONE_HUNDRED_DOLLARS = '100'
 FIVE_HUNDRED_DOLLARS = '500'
 ONE_THOUSAND_DOLLARS = '1000'
-
-def split_dataset(full_dataset, split_rate=0.8):  
-    train_size = int(split_rate * len(full_dataset))
-    test_size = len(full_dataset) - train_size
-    train_dataset, test_dataset = torch.utils.data.random_split(full_dataset, [train_size, test_size])
-    return train_dataset,test_dataset
-
-def makeTorchDataset(*features):
-    tensor_features = []
-    for feature in features:
-        tensor_feature = torch.tensor([f for f in feature])
-        tensor_features.append(tensor_feature)
-    return TensorDataset(*tensor_features)
 
 def load_money_images(money_type,img_dir='data/money_img'):
     print('load_money_images %s'%money_type)
@@ -131,5 +120,5 @@ if __name__ == "__main__":
     print(X.shape)
 
     dataset = makeTorchDataset(X,Y)
-    train_dataset,test_dataset = split_dataset(dataset)
+    train_dataset,test_dataset = splitDataset(dataset)
 
