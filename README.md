@@ -16,6 +16,6 @@
 
 ## Result
 測試資料正確率約85%
-
+![](https://raw.githubusercontent.com/p208p2002/NTD-CNN/master/score.png?raw=true)
 ## ENV
 - torch >= 1.3.0
