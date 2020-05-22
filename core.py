@@ -6,19 +6,46 @@ import imgaug as ia
 import imgaug.augmenters as iaa
 import numpy as np
 import imageio
+import glob
+import logging
+FORMAT = '%(filename)s line:%(lineno)d\t%(message)s'
+logging.basicConfig(level=logging.INFO,format=FORMAT)
+print = logging.info
 
-def log(*logs):
-    enablePrint()
-    print(*logs)
-    blockPrint()
+def make_XY(data,label_ids):
+    X = []
+    Y = []
+    for label_id,_X in zip(label_ids,data):
+        #
+        # print(len(_X))
+        y = [label_id]*len(_X)
+        # print(y)
+        Y+=y
+        #
+        X += [x for x in _X]
+        
+    Y = np.array(Y)
+    X = np.array(X)
+    X = np.moveaxis(X, -1, 1) # move axis to fit pytorch input format -> N C H W
+    print(Y)
+    print(Y.shape)
+    print(X.shape)
+    return X,Y
 
-# Disable
-def blockPrint():
-    sys.stdout = open(os.devnull, 'w')
-
-# Restore
-def enablePrint():
-    sys.stdout = sys.__stdout__
+def load_money_images(money_type,img_dir='data/money_img',split_test=False):
+    print('load_money_images %s'%money_type)
+    imgs = []
+    img_paths = glob.glob(img_dir+'/'+money_type+'/*.jpg')
+    # print(len(img_paths))
+    # pbar = tqdm(total=len(img_paths))
+    for img_path in img_paths:
+        img = imageio.imread(img_path)
+        imgs.append(img)
+        # pbar.update(1)
+    if(split_test):
+        return np.array(imgs[:int(len(imgs)/2)]),np.array(imgs[int(len(imgs)/2):])
+    else:
+        return np.array(imgs)
 
 def saveModel(model,name):
     now = datetime.now()
@@ -55,7 +82,7 @@ def makeTorchDataLoader(torch_dataset,**options):
     #options: batch_size=int,shuffle=bool
     return DataLoader(torch_dataset,**options)
 
-def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 30,save_dir = 'data/augmentation_img'):
+def img_augmentation(images,save_name_prefix,img_augmentation_pre_image = 60,save_dir = 'data/augmentation_img'):
     if not os.path.isdir(save_dir):
         os.mkdir(save_dir)
     save_dir += '/' + save_name_prefix

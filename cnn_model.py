@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.nn.functional as F
 import logging
+
 FORMAT = '%(filename)s line:%(lineno)d\t%(message)s'
 logging.basicConfig(level=logging.INFO,format=FORMAT)
 print = logging.info

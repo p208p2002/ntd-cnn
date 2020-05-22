@@ -1,7 +1,5 @@
 import numpy as np
 import imageio
-import glob
-from tqdm import tqdm
 import logging
 import os
 from core import *
@@ -9,51 +7,14 @@ from cnn_model import Net
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import time
 
-FORMAT = 'line:%(lineno)d\t%(message)s'
+FORMAT = '%(filename)s line:%(lineno)d\t%(message)s'
 logging.basicConfig(level=logging.INFO,format=FORMAT)
 print = logging.info
 
 ONE_HUNDRED_DOLLARS = '100'
 FIVE_HUNDRED_DOLLARS = '500'
 ONE_THOUSAND_DOLLARS = '1000'
-
-def make_XY(data,label_ids):
-    X = []
-    Y = []
-    for label_id,_X in zip(label_ids,data):
-        #
-        print(len(_X))
-        y = [label_id]*len(_X)
-        print(y)
-        Y+=y
-        #
-        X += [x for x in _X]
-        
-    Y = np.array(Y)
-    X = np.array(X)
-    X = np.moveaxis(X, -1, 1) # move axis to fit pytorch input format -> N C H W
-    print(Y)
-    print(Y.shape)
-    print(X.shape)
-    time.sleep(1)
-    return X,Y
-
-def load_money_images(money_type,img_dir='data/money_img',split_test=False):
-    print('load_money_images %s'%money_type)
-    imgs = []
-    img_paths = glob.glob(img_dir+'/'+money_type+'/*.jpg')
-    # print(len(img_paths))
-    # pbar = tqdm(total=len(img_paths))
-    for img_path in img_paths:
-        img = imageio.imread(img_path)
-        imgs.append(img)
-        # pbar.update(1)
-    if(split_test):
-        return np.array(imgs[:int(len(imgs)/2)]),np.array(imgs[int(len(imgs)/2):])
-    else:
-        return np.array(imgs)
 
 def train(model,optimizer,loss_func,train_dataloader,device):
     model.train()
