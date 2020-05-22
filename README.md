@@ -1,2 +1,20 @@
-https://github.com/aleju/imgaug
-https://github.com/imageio/imageio
+# NTD-CNN
+新台幣鈔票辨識
+> 圖像識別課堂作業
+
+## Method
+- data augmenting
+- dropout
+
+## Dataset
+100、500、1000元鈔票各20張
+### Train setting
+100、500、1000元鈔票各10張
+### Test setting
+100、500、1000元鈔票各10張
+
+## Result
+測試資料正確率約85%
+
+## ENV
+- torch >= 1.3.0
