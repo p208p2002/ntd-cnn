@@ -2,7 +2,8 @@
 新台幣鈔票辨識
 > 圖像識別課堂作業
 
-## Method
+## Methods
+- convolutional neural network
 - data augmenting
 - dropout
 
