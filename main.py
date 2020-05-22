@@ -19,7 +19,28 @@ ONE_HUNDRED_DOLLARS = '100'
 FIVE_HUNDRED_DOLLARS = '500'
 ONE_THOUSAND_DOLLARS = '1000'
 
-def load_money_images(money_type,img_dir='data/money_img'):
+def make_XY(data,label_ids):
+    X = []
+    Y = []
+    for label_id,_X in zip(label_ids,data):
+        #
+        print(len(_X))
+        y = [label_id]*len(_X)
+        print(y)
+        Y+=y
+        #
+        X += [x for x in _X]
+        
+    Y = np.array(Y)
+    X = np.array(X)
+    X = np.moveaxis(X, -1, 1) # move axis to fit pytorch input format -> N C H W
+    print(Y)
+    print(Y.shape)
+    print(X.shape)
+    time.sleep(1)
+    return X,Y
+
+def load_money_images(money_type,img_dir='data/money_img',split_test=False):
     print('load_money_images %s'%money_type)
     imgs = []
     img_paths = glob.glob(img_dir+'/'+money_type+'/*.jpg')
@@ -29,7 +50,10 @@ def load_money_images(money_type,img_dir='data/money_img'):
         img = imageio.imread(img_path)
         imgs.append(img)
         # pbar.update(1)
-    return np.array(imgs)
+    if(split_test):
+        return np.array(imgs[:int(len(imgs)/2)]),np.array(imgs[int(len(imgs)/2):])
+    else:
+        return np.array(imgs)
 
 def train(model,optimizer,loss_func,train_dataloader,device):
     model.train()
@@ -70,9 +94,9 @@ def test(model,test_dataloader,device):
 
 if __name__ == "__main__":
     # 原始訓練資料
-    one_hunderd_dollars = load_money_images(ONE_HUNDRED_DOLLARS, img_dir='data/money_img')
-    five_hunderd_dollars = load_money_images(FIVE_HUNDRED_DOLLARS, img_dir='data/money_img')
-    one_thousand_dollars = load_money_images(ONE_THOUSAND_DOLLARS, img_dir='data/money_img')
+    one_hunderd_dollars, one_hunderd_dollars_test = load_money_images(ONE_HUNDRED_DOLLARS, img_dir='data/money_img', split_test=True)
+    five_hunderd_dollars, five_hunderd_dollars_test = load_money_images(FIVE_HUNDRED_DOLLARS, img_dir='data/money_img', split_test=True)
+    one_thousand_dollars, one_thousand_dollars_test = load_money_images(ONE_THOUSAND_DOLLARS, img_dir='data/money_img', split_test=True)
     
     # 資料增量
     os.system('rm -rf data/augmentation_img/')
@@ -84,11 +108,13 @@ if __name__ == "__main__":
     five_hunderd_dollars_augmentation = load_money_images(FIVE_HUNDRED_DOLLARS, img_dir='data/augmentation_img')
     one_thousand_dollars_augmentation = load_money_images(ONE_THOUSAND_DOLLARS, img_dir='data/augmentation_img')
 
+    # 合併資料
     one_hunderd_dollars = np.concatenate([one_hunderd_dollars,one_hunderd_dollars_augmentation],axis=0)
     five_hunderd_dollars = np.concatenate([five_hunderd_dollars,five_hunderd_dollars_augmentation],axis=0)
     one_thousand_dollars = np.concatenate([one_thousand_dollars,one_thousand_dollars_augmentation],axis=0)
 
     # 準備訓練資料
+    testing_data = np.array([one_hunderd_dollars_test,five_hunderd_dollars_test,one_thousand_dollars_test])
     traing_data = np.array([one_hunderd_dollars,five_hunderd_dollars,one_thousand_dollars])
     labels = [ONE_HUNDRED_DOLLARS,FIVE_HUNDRED_DOLLARS,ONE_THOUSAND_DOLLARS]
     label_ids = [i for i,_ in enumerate(labels)]
@@ -97,33 +123,15 @@ if __name__ == "__main__":
     print(labels)
     print(label_ids)
     
-    Y = []
-    X = []
-    for label_id,_X in zip(label_ids,traing_data):
-        #
-        print(len(_X))
-        y = [label_id]*len(_X)
-        print(y)
-        Y+=y
-        #
-        X += [x for x in _X]
-        
-    Y = np.array(Y)
-    X = np.array(X)
-    X = np.moveaxis(X, -1, 1) # N C H W
-    print(Y)
-    print(Y.shape)
-    print(X.shape)
-    time.sleep(3)
+    # 
+    X,Y = make_XY(traing_data,label_ids)
+    X_test,Y_test = make_XY(testing_data,label_ids)
 
-    dataset = makeTorchDataset(X,Y)
-    # train_dataset,test_dataset = splitDataset(dataset,split_rate=0.8)
-    
-    # train_dataloader =  makeTorchDataLoader(train_dataset, batch_size=3, shuffle=True)
-    train_dataloader  =  makeTorchDataLoader(dataset, batch_size=32, shuffle=True)
-    test_dataloader =  makeTorchDataLoader(dataset, batch_size=12, shuffle=True)
-    
+    train_dataset = makeTorchDataset(X,Y)
+    test_dataset = makeTorchDataset(X_test,Y_test)
 
+    train_dataloader  =  makeTorchDataLoader(train_dataset, batch_size=32, shuffle=True)
+    test_dataloader =  makeTorchDataLoader(test_dataset, batch_size=12, shuffle=True)
     
     # setting & init
     model = Net()
