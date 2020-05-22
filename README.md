@@ -15,7 +15,6 @@
 100、500、1000元鈔票各10張
 
 ## Result
-測試資料正確率約85%
-![](https://raw.githubusercontent.com/p208p2002/NTD-CNN/master/score.png?raw=true)
+![](https://github.com/p208p2002/NTD-CNN/blob/master/score.png?raw=true)
 ## ENV
 - torch >= 1.3.0
