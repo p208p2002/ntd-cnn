@@ -1,1 +1,1 @@
-imgaug
+imgaug==0.4.0
