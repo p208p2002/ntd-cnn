@@ -21,13 +21,13 @@
 - `core.py`: 自訂函式庫
 
 ## Results
-### acc_score
+### acc_score (training)
 <img src="https://github.com/p208p2002/NTD-CNN/blob/master/acc_score.png?raw=true" alt="acc_score" width="380px"/>
 
-### loss_score
+### loss_score (training)
 <img src="https://github.com/p208p2002/NTD-CNN/blob/master/loss_score.png?raw=true" alt="loss_score" width="380px"/>
 
-### confusion_matrix
+### confusion_matrix (testing)
 <img src="https://github.com/p208p2002/NTD-CNN/blob/master/confusion_matrix.png?raw=true" alt="confusion_matrix" width="320px"/>
 
 ## ENV
