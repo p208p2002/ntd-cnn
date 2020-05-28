@@ -20,7 +20,7 @@
 ### loss_score
 ![](https://github.com/p208p2002/NTD-CNN/blob/master/loss_score.png?raw=true)
 ### confusion_matrix
-![](https://github.com/p208p2002/NTD-CNN/blob/master/confusion_matrix?raw=true)
+![](https://github.com/p208p2002/NTD-CNN/blob/master/confusion_matrix.png?raw=true)
 
 ## ENV
 - torch >= 1.3.0
