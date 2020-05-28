@@ -17,11 +17,13 @@
 
 ## Results
 ### acc_score
-![](https://github.com/p208p2002/NTD-CNN/blob/master/acc_score.png?raw=true =350px)
+<img src="https://github.com/p208p2002/NTD-CNN/blob/master/acc_score.png?raw=true" alt="acc_score" width="350px"/>
+
 ### loss_score
-![](https://github.com/p208p2002/NTD-CNN/blob/master/loss_score.png?raw=true =350px)
+<img src="https://github.com/p208p2002/NTD-CNN/blob/master/loss_score.png?raw=true" alt="loss_score" width="350px"/>
+
 ### confusion_matrix
-![](https://github.com/p208p2002/NTD-CNN/blob/master/confusion_matrix.png?raw=true =350px)
+<img src="https://github.com/p208p2002/NTD-CNN/blob/master/confusion_matrix.png?raw=true" alt="confusion_matrix" width="350px"/>
 
 ## ENV
 - torch >= 1.3.0
